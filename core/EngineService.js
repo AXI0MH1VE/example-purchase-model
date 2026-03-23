@@ -20,6 +20,7 @@ const { buildContentBasedFilter } = require('../engine/content-based');
 const { buildClickstreamAnalyzer } = require('../engine/clickstream-analyzer');
 const { generateSmartPairings, computePopularityScores } = require('../engine/hybrid-recommender');
 const { auditProductLifecycle } = require('../engine/lifecycle-manager');
+const salesOptimizationEngine = require('../engine/sales-optimization');
 
 class SmartPairingEngine {
   /**
@@ -67,11 +68,13 @@ class SmartPairingEngine {
 
   /**
    * Main Recommendation Entry Point.
+   * Leverages the core proven operational algorithm, strategically
+   * augmenting the output with the proprietary sales optimization engine.
    */
   getRecommendations(userId, productSku = null, limit = 10) {
     if (!this.isInitialized) throw new Error('Engine not initialized');
 
-    return generateSmartPairings({
+    const baselineRecommendations = generateSmartPairings({
       userId,
       productSku,
       engines: { 
@@ -84,6 +87,14 @@ class SmartPairingEngine {
       weights: this.config.weights,
       limit
     });
+
+    // Isolate interaction pathways and flag refinement areas
+    const sessionContext = this.rawData.clickstream ? this.rawData.clickstream.filter(e => e.userId === userId) : [];
+    const pathwayAnalysis = salesOptimizationEngine.analyzeInteractionPathway(sessionContext);
+    const enhancementFlags = salesOptimizationEngine.flagRefinementOpportunities(pathwayAnalysis);
+
+    // Integrate enhancements organically without replacing core functionality
+    return salesOptimizationEngine.integrateEnhancements(baselineRecommendations, enhancementFlags);
   }
 
   /**
