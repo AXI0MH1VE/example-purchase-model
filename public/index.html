@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Smart Pairing Engine by NMG — Axiom Hive. Double your sales by showing customers exactly what they need next.">
+  <title>Smart Pairing Engine — Axiom Hive</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬡</text></svg>">
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- ══ Sidebar ═══════════════════════════════════════════════════════ -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-text">
+          <span>Axiom Hive · NMG</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <button class="nav-item active" data-section="overview" onclick="navigateTo('overview')">
+          <span class="nav-icon">◈</span> Dashboard
+        </button>
+
+        <div class="nav-section-label">Engine</div>
+        <button class="nav-item" data-section="pairings" onclick="navigateTo('pairings')">
+          <span class="nav-icon">⇌</span> Product Pairings
+        </button>
+        <button class="nav-item" data-section="rules" onclick="navigateTo('rules')">
+          <span class="nav-icon">⊞</span> Association Rules
+        </button>
+        <button class="nav-item" data-section="heatmap" onclick="navigateTo('heatmap')">
+          <span class="nav-icon">▦</span> Affinity Heatmap
+        </button>
+
+        <div class="nav-section-label">Intelligence</div>
+        <button class="nav-item" data-section="intent" onclick="navigateTo('intent')">
+          <span class="nav-icon">◉</span> Intent Monitor
+        </button>
+        <button class="nav-item" data-section="bundles" onclick="navigateTo('bundles')">
+          <span class="nav-icon">▣</span> Bundle Builder
+        </button>
+
+        <div class="nav-section-label">Users</div>
+        <button class="nav-item" data-section="recommendations" onclick="navigateTo('recommendations')">
+          <span class="nav-icon">◎</span> User Recs
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>v1.0 · March 2026</p>
+        <p>Proprietary · NMG</p>
+      </div>
+    </aside>
+
+    <!-- ══ Main Wrapper ══════════════════════════════════════════════════ -->
+    <div class="main-wrapper">
+
+      <!-- ── Top Bar (Header) ─────────────────────────────────────────── -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="header-logo">
+            <h1>Smart Pairing Engine</h1>
+          </div>
+          <div class="header-separator"></div>
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <span class="breadcrumb-item">Axiom Hive</span>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-item current" id="breadcrumb-current">Dashboard</span>
+          </nav>
+        </div>
+        
+        <div class="topbar-right">
+          <div class="topbar-utility">
+            <button class="utility-icon" title="Search Intelligence" aria-label="Search Intelligence">⌕</button>
+            <button class="utility-icon" title="Engine Settings" aria-label="Engine Settings">⚙</button>
+            <div class="status-badge">
+              <div class="status-dot"></div>
+              <span>Active</span>
+            </div>
+            <div class="version-badge">v1.0</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ══ Page Content ════════════════════════════════════════════════ -->
+      <main class="page-content" id="main-content">
+
+        <!-- ── Hero Metrics ──────────────────────────────────────────── -->
+        <section class="section metrics-grid" id="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Baseline AOV</div>
+            <div class="metric-value" id="metric-baseline-aov">—</div>
+            <div class="metric-sublabel">Without engine</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Engine AOV</div>
+            <div class="metric-value" id="metric-engine-aov">—</div>
+            <div class="metric-sublabel">With Smart Pairing</div>
+            <div class="metric-change" id="metric-uplift">— uplift</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Active Rules</div>
+            <div class="metric-value" id="metric-rules">—</div>
+            <div class="metric-sublabel">Association patterns</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">High-Intent Rate</div>
+            <div class="metric-value" id="metric-intent">—</div>
+            <div class="metric-sublabel">Sessions above threshold</div>
+          </div>
+        </section>
+
+        <!-- ── AOV Comparison + Top Rules ────────────────────────────── -->
+        <section class="section dashboard-grid" id="section-overview">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">◈</span> AOV Uplift</div>
+              <div class="card-badge">$200 → $400</div>
+            </div>
+            <div class="card-body">
+              <div class="aov-comparison" id="aov-comparison">
+                <div class="aov-bar">
+                  <div class="aov-bar-value" id="aov-baseline-value">$200</div>
+                  <div class="aov-bar-fill baseline" id="aov-baseline-bar"></div>
+                  <div class="aov-bar-label">Baseline<br>Random Listings</div>
+                </div>
+                <div class="aov-arrow">
+                  <span class="aov-uplift" id="aov-uplift-label">+100%</span>
+                  <span class="arrow-icon">→</span>
+                </div>
+                <div class="aov-bar">
+                  <div class="aov-bar-value" id="aov-engine-value">$400</div>
+                  <div class="aov-bar-fill engine" id="aov-engine-bar"></div>
+                  <div class="aov-bar-label">With Engine<br>Smart Pairing</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="section-rules">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">⊞</span> Top Association Rules</div>
+              <div class="card-badge" id="rules-count-badge">— rules</div>
+            </div>
+            <div class="card-body">
+              <div class="scroll-container-v">
+                <table class="rules-table" id="rules-table">
+                  <thead>
+                    <tr>
+                      <th>Antecedent</th>
+                      <th></th>
+                      <th>Consequent</th>
+                      <th>Lift</th>
+                      <th>Conf</th>
+                      <th>Support</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rules-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Product Pairing Explorer ──────────────────────────────── -->
+        <section class="section dashboard-grid" id="section-pairings">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">⇌</span> Product Pairing Explorer</div>
+              <div class="card-badge">ARL + CF + CB</div>
+            </div>
+            <div class="card-body">
+              <div class="control-group">
+                <label for="product-select" class="sr-only">Select Search Product</label>
+                <select class="select-control" id="product-select" title="Select a product to view its correlated pairings">
+                  <option value="">Select a product...</option>
+                </select>
+              </div>
+              <div class="product-list" id="pairing-results">
+                <div class="empty-state">
+                  <div class="icon">⇌</div>
+                  <p>Select a product to see its top pairings</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── User Recommendations ────────────────────────────────── -->
+          <div class="card" id="section-recommendations">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">◎</span> User Recommendations</div>
+              <div class="card-badge">Hybrid</div>
+            </div>
+            <div class="card-body">
+              <div class="control-group">
+                <label for="user-select" class="sr-only">Select Active User</label>
+                <select class="select-control" id="user-select" title="Select a user to generate personalized recommendations">
+                  <option value="">Select a user...</option>
+                </select>
+              </div>
+              <div class="product-list" id="user-recommendations">
+                <div class="empty-state">
+                  <div class="icon">◎</div>
+                  <p>Select a user to see personalized recommendations</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Category Affinity Heatmap ─────────────────────────────── -->
+        <section class="section dashboard-grid full-width" id="section-heatmap">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">▦</span> Category Affinity Heatmap</div>
+              <div class="card-badge">Cross-Category Lift</div>
+            </div>
+            <div class="card-body">
+              <div class="heatmap-container" id="heatmap-container">
+                <div class="empty-state">
+                  <div class="icon">▦</div>
+                  <p>Loading affinity data...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Bundle Builder + Clickstream Intent ───────────────────── -->
+        <section class="section dashboard-grid">
+          <div class="card" id="section-bundles">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">▣</span> Bundle Builder</div>
+              <div class="card-badge">Behavioral</div>
+            </div>
+            <div class="card-body">
+              <div id="bundle-section">
+                <div class="empty-state">
+                  <div class="icon">▣</div>
+                  <p>Select a product above to generate bundle tiers</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="section-intent">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">◉</span> Clickstream Intent</div>
+              <div class="card-badge" id="intent-stats-badge">— sessions</div>
+            </div>
+            <div class="card-body">
+              <div id="intent-section">
+                <div class="intent-gauge" id="intent-gauge">
+                  <div class="gauge-ring" id="gauge-ring">
+                    <div class="gauge-value" id="gauge-value">—</div>
+                  </div>
+                  <div class="gauge-label" id="gauge-label">Intent Score</div>
+                </div>
+                <div id="intervention-display"></div>
+                <div class="session-list" id="session-list"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Social Proof + Scarcity ───────────────────────────────── -->
+        <section class="section dashboard-grid" id="behavioral-section">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">◫</span> Social Proof</div>
+              <div class="card-badge">Bandwagon</div>
+            </div>
+            <div class="card-body" id="social-proof-body">
+              <div class="empty-state">
+                <div class="icon">◫</div>
+                <p>Select a product to see social proof data</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">◬</span> Scarcity & Urgency</div>
+              <div class="card-badge">Loss Aversion</div>
+            </div>
+            <div class="card-body" id="scarcity-body">
+              <div class="empty-state">
+                <div class="icon">◬</div>
+                <p>Select a product to see scarcity signals</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- ══ Footer ══════════════════════════════════════════════════════ -->
+      <footer class="footer">
+        <p>Smart Pairing Engine v1.0 — NMG · Axiom Hive — March 22, 2026</p>
+        <p>Proprietary system. All data is synthetic for demonstration.</p>
+      </footer>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

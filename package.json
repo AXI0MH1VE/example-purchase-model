@@ -1,0 +1,23 @@
+{
+  "name": "example-purchase-model",
+  "version": "1.0.0",
+  "description": "Proprietary E-Commerce Recommendation Engine — Example Purchase Model",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "generate-data": "node data/generator.js",
+    "test": "node tests/test-algorithms.js && node tests/test-api.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0"
+  },
+  "keywords": [
+    "recommendation-engine",
+    "e-commerce",
+    "association-rules",
+    "collaborative-filtering",
+    "machine-learning"
+  ],
+  "license": "PROPRIETARY"
+}
