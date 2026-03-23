@@ -13,7 +13,7 @@ const { generateDataset } = require('./data/generator');
 const { generateBehavioralPackage } = require('./engine/behavioral-economics');
 const SmartPairingEngine = require('./core/EngineService');
 const PRESETS = require('./core/presets');
-const vendorSwapEngine = require('./engine/vendor-swap');
+const fulfillmentRouter = require('./engine/fulfillment-router');
 
 // P0: Authentication Middleware
 const { validateToken } = require('./core/authMiddleware');
@@ -48,17 +48,17 @@ const getTenantEngine = (tenantId) => {
 
 // ─── SaaS Vendor Swap Engine API ────────────────────────────────────────────
 app.post('/api/v1/transaction/swap', validateToken, validateBody(['sku', 'currentPrice']), asyncHandler(async (req, res) => {
-  const result = await vendorSwapEngine.processTransaction(req.body, req.tenant.tenantId);
+  const result = await fulfillmentRouter.processTransaction(req.body, req.tenant.tenantId);
   res.json(result);
 }));
 
 app.post('/api/v1/admin/config', validateToken, (req, res) => {
-  vendorSwapEngine.updateConfig(req.body);
-  res.json({ message: 'Configuration synchronized', currentConfig: vendorSwapEngine.configs });
+  fulfillmentRouter.updateConfig(req.body);
+  res.json({ message: 'Configuration synchronized', currentConfig: fulfillmentRouter.configs });
 });
 
 app.get('/api/v1/admin/logs', validateToken, (req, res) => {
-  res.json(vendorSwapEngine.getLogs().filter(l => l.tenantId === req.tenant.tenantId));
+  res.json(fulfillmentRouter.getLogs().filter(l => l.tenantId === req.tenant.tenantId));
 });
 
 // ─── Versioned API Endpoints ───────────────────────────────────────────────

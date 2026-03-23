@@ -23,11 +23,11 @@ Partners must trust that introducing a middleman utility will not bottleneck the
 
 ## 4. The Firsthand Proof Model
 
-You aren't purchasing a theoretical recommendation engine; you are deploying an automated arbitrage protocol. The ultimate constraint is that the model must prove itself dynamically in the immediate term:
+You aren't purchasing a theoretical recommendation engine; you are deploying a high-margin transaction router. The ultimate constraint is that the model must prove itself dynamically in the immediate term:
 
 1. **Deploy the Integration:** Paste the singular `hook.js` into your storefront.
 2. **Observe the Visual Telemetry:** Log into your isolated Tenant Portal and watch the live, chronological feed as the engine autonomously catches transactions and executes vendor routing.
-3. **Realize the Value:** The empirical proof is delivered through the empirical analytics—the direct, measured increase in your baseline AOV and real-time visualization of captured percentage margin intercepts.
+3. **Realize the Value:** The empirical proof is delivered through the empirical analytics—the direct, measured increase in your baseline AOV and real-time visualization of captured procurement efficiency.
 
 ## 5. Algorithmic Symbiosis: Rejecting Static Baseline ROI
 
@@ -37,9 +37,9 @@ The software's intrinsic design specification dictates that **financial value sc
 
 * As checkout velocity scales, the synthetic logic datasets become denser and more resolute.
 * As datasets densify, Association Rule Learning (ARL) accuracy compounds exponentially.
-* As pairing accuracy peaks, Vendor Arbitrage loops naturally identify infinitely deeper margin traps without manual intervention.
+* As pairing accuracy peaks, procurement efficiency naturally identifies infinitely deeper margin opportunities without manual intervention.
 
 The product is not a static fraction of operational efficiency; it is an active multiplier that uses its own compounding mathematical success to scale revenue bounds indefinitely.
 
 ---
-*The product guarantees no promises—only math, execution, and instantly tracked arbitrage value.*
+*The product guarantees no promises—only math, execution, and instantly tracked procurement efficiency.*

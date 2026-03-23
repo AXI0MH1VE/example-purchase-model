@@ -1,0 +1,188 @@
+  console.log
+    ≡ƒÅ¡ Generating synthetic e-commerce dataset...
+
+      at log (data/generator.js:412:11)
+
+  console.log
+      Γ£à 51 products across 8 categories
+
+      at log (data/generator.js:415:11)
+
+  console.log
+      Γ£à 500 users
+
+      at log (data/generator.js:418:11)
+
+  console.log
+      Γ£à 1500 orders
+
+      at log (data/generator.js:421:11)
+
+  console.log
+      Γ£à 10000 clickstream events
+
+      at log (data/generator.js:424:11)
+
+  console.log
+    
+    ≡ƒôè Dataset Statistics:
+
+      at log (data/generator.js:428:11)
+
+  console.log
+       Average Order Value: $479.80
+
+      at log (data/generator.js:429:11)
+
+  console.log
+       Max Order Value:     $2938.47
+
+      at log (data/generator.js:430:11)
+
+  console.log
+       Total Revenue:       $719696.35
+
+      at log (data/generator.js:431:11)
+
+  console.log
+    [Engine] Initializing Modular Core...
+
+      at SmartPairingEngine.log [as initialize] (core/EngineService.js:55:13)
+
+  console.log
+    
+    ≡ƒöì Association Rule Learning
+
+      at log (engine/association-rules.js:207:11)
+
+  console.log
+       Transactions: 1500
+
+      at log (engine/association-rules.js:208:11)
+
+  console.log
+       Min Support:  0.008 (12 transactions)
+
+      at log (engine/association-rules.js:209:11)
+
+  console.log
+       Min Confidence: 0.25
+
+      at log (engine/association-rules.js:210:11)
+
+  console.log
+       Min Lift:     1
+
+      at log (engine/association-rules.js:211:11)
+
+  console.log
+       Frequent Itemsets Found: 150
+
+      at log (engine/association-rules.js:214:11)
+
+  console.log
+       Association Rules Generated: 218
+
+      at log (engine/association-rules.js:217:11)
+
+  console.log
+       Top Rule: TechVolt Wireless Noise-Cancelling Headphones + ClearView Mechanical Keyboard ΓåÆ PixelPro 4K Monitor 27"
+
+      at log (engine/association-rules.js:220:13)
+
+  console.log
+         Lift: 17.5268 | Confidence: 0.9231 | Support: 0.008
+
+      at log (engine/association-rules.js:221:13)
+
+  console.log
+    
+    ≡ƒñ¥ Collaborative Filtering Engine
+
+      at log (engine/collaborative-filtering.js:215:11)
+
+  console.log
+       User-Item Matrix: 500 users ├ù 51 items
+
+      at log (engine/collaborative-filtering.js:218:11)
+
+  console.log
+       Item Similarities Computed: 51 items, avg 20.0 neighbors
+
+      at log (engine/collaborative-filtering.js:222:11)
+
+  console.log
+    
+    ≡ƒôï Content-Based Filtering Engine
+
+      at log (engine/content-based.js:123:11)
+
+  console.log
+       Product Vectors: 51 items ├ù 41 features
+
+      at log (engine/content-based.js:135:11)
+
+  console.log
+       Categories: 8 | Brands: 29
+
+      at log (engine/content-based.js:136:11)
+
+  console.log
+       Product Similarities Computed: 51 items
+
+      at log (engine/content-based.js:156:11)
+
+  console.log
+    
+    ≡ƒæü∩╕Å  Clickstream Session Analyzer
+
+      at log (engine/clickstream-analyzer.js:344:11)
+
+  console.log
+       Sessions: 797
+
+      at log (engine/clickstream-analyzer.js:347:11)
+
+  console.log
+       Total Events: 10000
+
+      at log (engine/clickstream-analyzer.js:348:11)
+
+  console.log
+       Intent Distribution: High=687 | Medium=80 | Low=30
+
+      at log (engine/clickstream-analyzer.js:365:11)
+
+  console.log
+       Average Intent Score: 0.8882
+
+      at log (engine/clickstream-analyzer.js:368:11)
+
+FAIL tests/api.test.js
+  API Gateway Integration Tests
+    ΓêÜ GET /api/recommendations/:userId returns 200 and JSON (49 ms)
+    ΓêÜ GET /api/metrics returns correct engine stats (6 ms)
+    ├ù POST /api/v1/transaction/swap identifies margin efficiency (107 ms)
+
+  ΓùÅ API Gateway Integration Tests ΓÇ║ POST /api/v1/transaction/swap identifies margin efficiency
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      60 |     const response = await request(app).post('/api/v1/transaction/swap').send(payload);
+      61 |     expect(response.status).toBe(200);
+    > 62 |     expect(response.body.success).toBe(true);
+         |                                   ^
+      63 |     expect(response.body.routedTo).toBe('SUPPLIER_B');
+      64 |     expect(response.body.marginEfficiency).toBeGreaterThan(0.3); // 1 - 120/200 = 0.4
+      65 |   });
+
+      at Object.toBe (tests/api.test.js:62:35)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 2 passed, 3 total
+Snapshots:   0 total
+Time:        1.132 s
+Ran all test suites matching tests/api.test.js.

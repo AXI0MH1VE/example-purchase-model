@@ -1,117 +1,92 @@
-# Smart Pairing Engine — Axiom Hive
+# Smart Pairing Engine v2.0 — Axiom Hive
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/AXIOMHIVE/example-purchase-model)
-[![Engine](https://img.shields.io/badge/engine-Hybrid--Rec-green.svg)](https://github.com/AXIOMHIVE/example-purchase-model)
+[![Version](https://img.shields.io/badge/version-2.0.0--SaaS-blue.svg)](https://github.com/AXIOMHIVE/example-purchase-model)
+[![Engine](https://img.shields.io/badge/engine-AxiomCore--2.0-green.svg)](https://github.com/AXIOMHIVE/example-purchase-model)
 [![License](https://img.shields.io/badge/license-PROPRIETARY-red.svg)](https://github.com/AXIOMHIVE/example-purchase-model)
 
-> **"Double your sales by showing customers exactly what they need next."**
+> **"A Unified Orchestration Layer driving algorithmic intelligence across every industry."**
 
-The **Smart Pairing Engine** (v1.0) is a sophisticated, high-performance recommendation system developed for Axiom Hive. It integrates multiple algorithmic layers to provide real-time, high-accuracy product pairings, user recommendations, and behavioral economics nudge packages.
+The **Smart Pairing Engine (v2.0)** is a high-performance, multi-tenant SaaS platform developed for **Axiom Hive**. It functions as a domain-agnostic "Recommendation Brain," orchestrating complex behavioral analytics, machine learning pairings, and fulfillment optimization through a single API Gateway.
 
 ---
 
-## ◈ Core Architecture
+## ◈ The Unified Orchestration Workflow
+The engine unifies fragmented features into a streamlined 5-step lifecycle for enterprise deployment:
 
-The engine utilizes a hybrid approach to circumvent the "cold start" problem and maximize Average Order Value (AOV).
+1.  **Ingestion:** Connect any dataset (Retail, Legal, Media) to the API Gateway.
+2.  **Configuration:** Set operational rules (e.g., *Security > Speed*) via domain-specific presets.
+3.  **Deployment:** Logic is rendered to the end-user via interactive non-invasive connectors.
+4.  **Monitoring:** Native A/B testing and Hot-Reload swap winning algorithms instantly.
+5.  **Governance:** Every decision is recorded for full compliance and corporate audit.
 
-### 1. Engine Layers
+---
 
-- **Association Rule Learning (ARL):** Uses Apriori-inspired logic to identify "Customers who bought X also bought Y" patterns with high Lift and Confidence metrics.
-- **Collaborative Filtering (CF):** Analyzes user behavior across the entire dataset to find similarities between users and items.
-- **Content-Based Filtering (CB):** Recommends items based on intrinsic product attributes and categorical proximity.
-- **Clickstream Analyzer:** Real-time intent monitoring that scores user sessions based on navigation patterns (e.g., rapid scrolling, repeat views, cart additions).
+## ◈ Key Functional Pillars
 
-### 2. Behavioral Intelligence
+### 1. Multi-Layer Recommendation Core
+- **Association Rule Learning (ARL):** Identifies co-purchase patterns (Frequent Itemsets).
+- **Collaborative Filtering (CF):** Computes user-user and item-item similarity vectors.
+- **Content-Based Filtering (CB):** Matches product attributes using distance metrics.
+- **Popularity & Trending:** Injects real-time demand signals into the final score.
 
-- **Bundle Builder:** Dynamically generates high-AOV bundles (Entry, Mid, High tiers).
-- **Social Proof Layer:** Injects real-time "Bandwagon" metrics (e.g., "42 others are viewing this right now").
-- **Scarcity & Urgency:** Implements Loss Aversion strategies using inventory and popularity signals.
+### 2. Proprietary Sales Optimization Engine
+Our advanced `sales-optimization.js` module uses machine learning to dissect user interaction pathways from discovery to transaction. It identifies:
+- **Conversion Pathways:** Mapped successful routes that drive revenue.
+- **Refinement Flags:** Automatic identification of friction in UI Hierarchy, Data Retrieval, and Checkout Flow.
+
+### 3. Fulfillment Router (Optimization Engine)
+Intercepts checkout requests to dynamically route fulfillment through a network of preferred suppliers.
+- **Efficiency Gains:** Identifies identical products with superior wholesale terms.
+- **Margin Protection:** Silently optimizes the supply chain to capture maximum profit per unit.
+
+---
+
+## ◈ Commercial ROI
+- **Reduced Overhead:** One engineer can manage systems typically requiring a full DevOps team.
+- **Speed to Market:** Launch domain-specific pilots in days, not months.
+- **Risk Mitigation:** Embedded audit modules ensure compliance while experimenting with new logic.
+
+---
+
+## ◈ Interactive Demos
+Launch these endpoints locally to experience the engine's versatility:
+- [**Retail Profile**](http://localhost:3000/demo-retail.html) (AOV Focused)
+- [**Legal Discovery**](http://localhost:3000/demo-legal.html) (Precendent Focused)
+- [**Media Streaming**](http://localhost:3000/demo-media.html) (Engagement Focused)
 
 ---
 
 ## ◈ Technical Stack
+- **Architecture:** Node.js (Express), Modular Hub-and-Spoke
+- **Testing:** Jest + Supertest (Continuous Integration via GitHub Actions)
+- **Performance:** Sub-200ms Latency Benchmark
+- **Security:** Multi-tenant JWT/Bearer Isolation, Dotenv Configuration
 
-- **Backend:** Node.js, Express.js
-- **Frontend:** Vanilla JavaScript (ES6+), CSS3 (Modern Monochrome Aesthetic)
-- **Data:** Synthetic Generator (supports 10k+ events/sec)
-- **Intelligence:** Proprietary algorithms in `/engine`
+---
+
+## ◈ API Reference (v1 SaaS)
+
+| Endpoint | Method | Description |
+| :--- | :--- | :--- |
+| `/api/v1/gateway/configure` | `POST` | Reconfigures domain presets and datasets on-the-fly. |
+| `/api/v1/recommendations/:uid` | `GET` | Delivers optimized hybrid recommendations + optimization flags. |
+| `/api/v1/metrics` | `GET` | Real-time computed AOV, projected uplift, and association stats. |
+| `/api/v1/transaction/swap` | `POST` | Processes fulfillment routing across supplier networks. |
+| `/api/v1/lifecycle/sync` | `GET` | Triggers a Hot-Rebuild and catalog life-cycle audit. |
 
 ---
 
 ## ◈ Getting Started
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v16 or higher)
-- npm or yarn
-
-### Installation
-
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/AXIOMHIVE/example-purchase-model.git
-   cd example-purchase-model
-   ```
-
-2. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-3. **Generate synthetic data:**
-
-   ```bash
-   npm run generate-data
-   ```
-
-4. **Launch the engine:**
-
-   ```bash
-   npm start
-   ```
-
-5. **Access the Dashboard:**
-
-   Open `http://localhost:3000` in your browser.
-
----
-
-## ◈ API Reference
-
-| Endpoint | Method | Description |
-| :--- | :--- | :--- |
-| `/api/metrics` | `GET` | System-wide performance and AOV uplift metrics. |
-| `/api/products` | `GET` | Complete product catalog with category filtering. |
-| `/api/pairings/:sku` | `GET` | Hybrid pairings (ARL + CF + CB) for a specific product. |
-| `/api/bundles/:sku` | `GET` | Full behavioral economics package for a product. |
-| `/api/session/analyze` | `POST` | Real-time clickstream intent analysis. |
-
----
-
-## ◈ Directory Structure
-
-```text
-├── data/               # Data generation logic
-├── engine/             # Core algorithmic layers
-│   ├── association-rules.js
-│   ├── behavioral-economics.js
-│   ├── clickstream-analyzer.js
-│   └── ...
-├── public/             # Dashboard UI (HTML/CSS/JS)
-├── server.js           # Express API & Engine Orchestrator
-└── package.json        # Project metadata
-```
+1.  **Installation:** `npm install`
+2.  **Environment:** Provision `.env` from `.env.example`.
+3.  **Production Boot:** `npm start`
+4.  **Verification:** `npm test` (Runs algorithm and API latency benchmarks).
 
 ---
 
 ## ◈ License
-
 **PROPRIETARY — AXIOM HIVE / NMG**  
-Unauthorized copying or distribution of this software is strictly prohibited. For licensing inquiries, please contact NMG.
+Unauthorized copying or distribution of this software is strictly prohibited.
 
----
-
-Developed by **NMG** for **Axiom Hive**.  
-*March 2026 Release*
+*Strategic Engineering — March 2026 Release v2.0*

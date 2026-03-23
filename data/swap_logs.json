@@ -1,0 +1,30 @@
+[
+  {
+    "timestamp": "2026-03-23T10:45:03.819Z",
+    "tenantId": "TENANT-001",
+    "sku": "SKU-001",
+    "status": "No Enhancement Identified",
+    "reason": "Thresholds not met"
+  },
+  {
+    "timestamp": "2026-03-23T10:44:52.020Z",
+    "tenantId": "TENANT-001",
+    "sku": "SKU-001",
+    "status": "No Enhancement Identified",
+    "reason": "Thresholds not met"
+  },
+  {
+    "timestamp": "2026-03-23T10:44:41.117Z",
+    "tenantId": "TENANT-001",
+    "sku": "SKU-001",
+    "status": "No Enhancement Identified",
+    "reason": "Thresholds not met"
+  },
+  {
+    "timestamp": "2026-03-23T10:44:24.249Z",
+    "tenantId": "TENANT-001",
+    "sku": "SKU-001",
+    "status": "No Enhancement Identified",
+    "reason": "Thresholds not met"
+  }
+]
