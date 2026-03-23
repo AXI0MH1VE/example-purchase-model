@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Axiom Hive | Retail Smart Pairs</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+    
+    body, html {
+      margin: 0; padding: 0;
+      background: #0f172a; color: #f8fafc;
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+    }
+    .grid-bg {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background-image: radial-gradient(circle at center, #1e293b 1px, transparent 1px);
+      background-size: 40px 40px; opacity: 0.3; z-index: -1;
+    }
+    nav {
+      padding: 1rem 3rem; background: rgba(15, 23, 42, 0.8);
+      backdrop-flex: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .brand { font-weight: 600; font-size: 1.5rem; letter-spacing: -0.5px; }
+    .brand span { color: #38bdf8; }
+    
+    .hero {
+      padding: 5rem 3rem 3rem; text-align: center;
+    }
+    .hero h1 { font-size: 3.5rem; margin-bottom: 0.5rem; }
+    .hero p { color: #94a3b8; font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem; line-height: 1.6; }
+    
+    .panel-container {
+      display: flex; max-width: 1200px; margin: 0 auto; gap: 2rem; padding: 0 2rem;
+    }
+    .card {
+      flex: 1; background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px; padding: 2rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .card:hover { transform: translateY(-5px); border-color: rgba(56, 189, 248, 0.4); }
+    .card h3 { margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; color: #38bdf8; }
+    
+    .recommendation-list { list-style: none; padding: 0; margin: 0; }
+    .rec-item {
+      padding: 1rem; margin-bottom: 1rem;
+      background: rgba(255,255,255,0.03); border-radius: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: background 0.2s ease;
+      cursor: pointer;
+    }
+    .rec-item:hover { background: rgba(56, 189, 248, 0.1); }
+    .rec-item h4 { margin: 0 0 0.25rem 0; font-weight: 400; }
+    .rec-item small { color: #64748b; }
+    .score-badge {
+      background: rgba(56, 189, 248, 0.2); color: #7dd3fc;
+      padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;
+    }
+
+    button {
+      background: #38bdf8; color: #020617; padding: 0.75rem 1.5rem;
+      border: none; border-radius: 8px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: all 0.2s;
+    }
+    button:hover { background: #7dd3fc; box-shadow: 0 0 15px rgba(56, 189, 248, 0.5); }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <nav>
+    <div class="brand">AXIOM<span>HIVE</span></div>
+    <div>Retail Profile</div>
+  </nav>
+
+  <section class="hero">
+    <h1>Smart Pairings API</h1>
+    <p>Demonstrating real-time, hybrid recommendation delivery configured for E-Commerce. Observing User <b>USR-001</b> with the <code>RETAIL</code> weighted scoring preset.</p>
+    <button onclick="fetchRecommendations()">Trigger Pairing Algorithm</button>
+  </section>
+
+  <div class="panel-container">
+    <div class="card">
+      <h3>Active User Context</h3>
+      <div id="user-info">
+        <p>Loading session data...</p>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3>Algorithm Outputs</h3>
+      <ul class="recommendation-list" id="rec-list">
+        <div style="color:#64748b; text-align:center; padding: 2rem;">Awaiting Engine Response...</div>
+      </ul>
+      <p id="latency-metric" style="color: #64748b; font-size: 0.9rem; margin-top: 1rem; text-align: right;"></p>
+    </div>
+  </div>
+
+  <script>
+    async function fetchRecommendations() {
+      const recList = document.getElementById('rec-list');
+      const metric = document.getElementById('latency-metric');
+      recList.innerHTML = '<div style="color:#64748b; text-align:center; padding: 2rem;">Processing Multi-Layer Matrix...</div>';
+      
+      try {
+        const response = await fetch('/api/recommendations/USR-001');
+        const data = await response.json();
+        
+        recList.innerHTML = '';
+        data.recommendations.forEach(rec => {
+          recList.innerHTML += `
+            <li class="rec-item">
+              <div>
+                <h4>${rec.product.sku || 'Unknown'}</h4>
+                <small>${rec.product.category || 'Retail'}</small>
+              </div>
+              <span class="score-badge">${rec.score.toFixed(2)}x</span>
+            </li>
+          `;
+        });
+        
+        metric.innerHTML = `Latency: <b>${data.metadata.latencyMs}ms</b> | Pool: ${data.metadata.poolSize}`;
+        
+        document.getElementById('user-info').innerHTML = `
+          <p><strong>Target ID:</strong> USR-001</p>
+          <p><strong>Applied Rule Sets:</strong> ARL (40%), CF (30%), CB (15%), Pop (15%)</p>
+        `;
+      } catch (err) {
+        recList.innerHTML = `<div style="color:#ef4444; padding: 1rem;">Engine Offline or Unreachable.</div>`;
+      }
+    }
+  </script>
+</body>
+</html>

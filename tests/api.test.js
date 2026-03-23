@@ -1,0 +1,44 @@
+const request = require('supertest');
+const express = require('express');
+const SmartPairingEngine = require('../core/EngineService');
+const PRESETS = require('../core/presets');
+const { generateDataset } = require('../data/generator');
+
+describe('API Gateway Integration Tests', () => {
+  let app;
+  let engine;
+
+  beforeAll(() => {
+    app = express();
+    app.use(express.json());
+    
+    // Inject mock route matching the server.js architecture
+    // We mock the endpoints to test gateway functionality without spinning up the full server.js
+    // to avoid listening port conflicts during tests.
+    
+    const data = generateDataset();
+    engine = new SmartPairingEngine(data, PRESETS.RETAIL);
+
+    app.get('/api/recommendations/:userId', (req, res) => {
+      const recs = engine.getRecommendations(req.params.userId, null, 10);
+      res.json(recs);
+    });
+
+    app.get('/api/metrics', (req, res) => {
+      res.json(engine.getStats());
+    });
+  });
+
+  test('GET /api/recommendations/:userId returns 200 and JSON', async () => {
+    const response = await request(app).get('/api/recommendations/USR-001');
+    expect(response.status).toBe(200);
+    expect(response.body.recommendations).toBeDefined();
+    expect(response.body.metadata).toBeDefined();
+  });
+
+  test('GET /api/metrics returns correct engine stats', async () => {
+    const response = await request(app).get('/api/metrics');
+    expect(response.status).toBe(200);
+    expect(response.body.productCount).toBeGreaterThan(0);
+  });
+});

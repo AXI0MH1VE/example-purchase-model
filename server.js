@@ -32,6 +32,13 @@ const PRESETS = require('./core/presets');
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Gateway Logging Middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 3000;
@@ -40,28 +47,55 @@ const PORT = process.env.PORT || 3000;
 const bootStart = Date.now();
 
 // Step 1: Initialize Modular Engine with Retail Preset
-const data = generateDataset();
-const engine = new SmartPairingEngine(data, PRESETS.RETAIL);
+let data = generateDataset();
+let engine = new SmartPairingEngine(data, PRESETS.RETAIL);
 
-console.log(`\n✅ Engine Modular Core Initialized in ${Date.now() - bootStart}ms`);
+console.log(`\n✅ Gateway Controller & Engine Core Initialized in ${Date.now() - bootStart}ms`);
 
 
 
-// ─── API Endpoints ──────────────────────────────────────────────────────────
+// ─── Gateway API Endpoints ──────────────────────────────────────────────────
+
+/**
+ * POST /api/gateway/configure
+ * Dynamically reconfigure the engine domain and dataset.
+ */
+app.post('/api/gateway/configure', (req, res) => {
+  try {
+    const { domainKey, dataset } = req.body;
+    if (!PRESETS[domainKey]) return res.status(400).json({ error: 'Invalid preset key' });
+    
+    if (dataset) {
+      const SchemaMapper = require('./core/schema-mapper');
+      data = SchemaMapper.mapDomainDataset(dataset, domainKey);
+      engine = new SmartPairingEngine(data, PRESETS[domainKey]);
+    } else {
+      engine.updateConfig(PRESETS[domainKey]);
+    }
+    res.json({ message: `Engine reconfigured for ${domainKey}`, stats: engine.getStats() });
+  } catch (err) {
+    console.error('[Gateway Error]', err);
+    res.status(500).json({ error: 'Configuration failed' });
+  }
+});
 
 /**
  * GET /api/recommendations/:userId
- * Hybrid recommendations for a specific user.
  */
 app.get('/api/recommendations/:userId', (req, res) => {
-  const start = Date.now();
-  const { userId } = req.params;
-  const limit = parseInt(req.query.limit) || 10;
-  const productSku = req.query.product || null;
+  try {
+    const start = Date.now();
+    const { userId } = req.params;
+    const limit = parseInt(req.query.limit) || 10;
+    const productSku = req.query.product || null;
 
-  const result = engine.getRecommendations(userId, productSku, limit);
-  result.metadata.latencyMs = Date.now() - start;
-  res.json(result);
+    const result = engine.getRecommendations(userId, productSku, limit);
+    result.metadata.latencyMs = Date.now() - start;
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch recommendations' });
+  }
 });
 
 /**

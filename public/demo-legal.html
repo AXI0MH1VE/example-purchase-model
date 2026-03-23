@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Axiom Hive | Legal Knowledge Pairs</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+    
+    body, html {
+      margin: 0; padding: 0;
+      background: #064e3b; color: #ecfdf5;
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+    }
+    .ambient-glow {
+      position: fixed; top: -100px; right: -100px; width: 600px; height: 600px;
+      background: rgba(16, 185, 129, 0.15); filter: blur(100px); border-radius: 50%; z-index: -1;
+    }
+    nav {
+      padding: 1rem 3rem; background: rgba(6, 78, 59, 0.8);
+      backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .brand { font-weight: 600; font-size: 1.5rem; letter-spacing: -0.5px; }
+    .brand span { color: #34d399; }
+    
+    .hero { padding: 5rem 3rem 3rem; text-align: center; }
+    .hero h1 { font-size: 3.5rem; margin-bottom: 0.5rem; }
+    .hero p { color: #a7f3d0; font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem; line-height: 1.6; }
+    
+    .panel-container { display: flex; max-width: 1200px; margin: 0 auto; gap: 2rem; padding: 0 2rem; }
+    .card {
+      flex: 1; background: rgba(6, 95, 70, 0.5);
+      border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 2rem;
+      backdrop-filter: blur(16px); transition: transform 0.3s ease;
+    }
+    .card:hover { transform: translateY(-5px); border-color: rgba(52, 211, 153, 0.4); }
+    .card h3 { margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; color: #34d399; }
+    
+    .recommendation-list { list-style: none; padding: 0; margin: 0; }
+    .rec-item {
+      padding: 1rem; margin-bottom: 1rem;
+      background: rgba(255,255,255,0.03); border-radius: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .rec-item:hover { background: rgba(52, 211, 153, 0.1); }
+    .rec-item h4 { margin: 0 0 0.25rem 0; font-weight: 400; }
+    .rec-item small { color: #6ee7b7; }
+    .score-badge {
+      background: rgba(52, 211, 153, 0.2); color: #a7f3d0;
+      padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;
+    }
+
+    button {
+      background: #34d399; color: #064e3b; padding: 0.75rem 1.5rem;
+      border: none; border-radius: 8px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: all 0.2s;
+    }
+    button:hover { background: #6ee7b7; box-shadow: 0 0 15px rgba(52, 211, 153, 0.5); }
+  </style>
+</head>
+<body>
+  <div class="ambient-glow"></div>
+  <nav>
+    <div class="brand">AXIOM<span>HIVE</span></div>
+    <div>Legal Profile</div>
+  </nav>
+
+  <section class="hero">
+    <h1>Precedent Discovery Engine</h1>
+    <p>Hot-swapped to the <code>LEGAL_KNOWLEDGE</code> preset. Highly biased towards content-based attribute similarity (50% weight). No profit margins considered.</p>
+    <button onclick="fetchRecommendations()">Query Similar Precedents</button>
+  </section>
+
+  <div class="panel-container">
+    <div class="card">
+      <h3>Active Context</h3>
+      <div id="user-info">
+        <p><strong>Target Case Citation:</strong> PROD-01</p>
+        <p>Before querying, we will hit the Gateway API to hot-swap the domain preset to LEGAL_KNOWLEDGE.</p>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3>Algorithm Outputs</h3>
+      <ul class="recommendation-list" id="rec-list">
+        <div style="color:#a7f3d0; text-align:center; padding: 2rem;">Awaiting Engine Response...</div>
+      </ul>
+      <p id="latency-metric" style="color: #6ee7b7; font-size: 0.9rem; margin-top: 1rem; text-align: right;"></p>
+    </div>
+  </div>
+
+  <script>
+    async function fetchRecommendations() {
+      const recList = document.getElementById('rec-list');
+      const metric = document.getElementById('latency-metric');
+      recList.innerHTML = '<div style="color:#a7f3d0; text-align:center; padding: 2rem;">Reconfiguring Engine...</div>';
+      
+      try {
+        // Step 1: Hot-Swap Domain
+        await fetch('/api/gateway/configure', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ domainKey: 'LEGAL_KNOWLEDGE' })
+        });
+        
+        // Step 2: Fetch Recommendations prioritizing CB Filter
+        recList.innerHTML = '<div style="color:#a7f3d0; text-align:center; padding: 2rem;">Searching Vector Space...</div>';
+        const response = await fetch('/api/recommendations/USR-001?product=PROD-01');
+        const data = await response.json();
+        
+        recList.innerHTML = '';
+        data.recommendations.forEach(rec => {
+          recList.innerHTML += `
+            <li class="rec-item">
+              <div>
+                <h4>${rec.product.sku || 'Unknown'}</h4>
+                <small>${rec.product.category || 'Law'}</small>
+              </div>
+              <span class="score-badge">${rec.score.toFixed(2)} Match</span>
+            </li>
+          `;
+        });
+        
+        metric.innerHTML = `Latency: <b>${data.metadata.latencyMs}ms</b> | Active Engine: LEGAL_KNOWLEDGE`;
+        
+      } catch (err) {
+        recList.innerHTML = `<div style="color:#ef4444; padding: 1rem;">Engine Offline or Unreachable.</div>`;
+      }
+    }
+  </script>
+</body>
+</html>

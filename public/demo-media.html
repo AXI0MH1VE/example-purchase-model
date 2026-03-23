@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Axiom Hive | Media & Streaming</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+    
+    body, html {
+      margin: 0; padding: 0;
+      background: #2e0249; color: #fdf4ff;
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+    }
+    .neon-mesh {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: radial-gradient(circle at 80% 20%, rgba(192, 38, 211, 0.4) 0%, transparent 40%),
+                  radial-gradient(circle at 20% 80%, rgba(147, 51, 234, 0.4) 0%, transparent 40%);
+      z-index: -1;
+    }
+    nav {
+      padding: 1rem 3rem; background: rgba(46, 2, 73, 0.7);
+      backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .brand { font-weight: 600; font-size: 1.5rem; }
+    .brand span { color: #f0abfc; font-weight: 300; }
+    
+    .hero { padding: 5rem 3rem 3rem; text-align: center; }
+    .hero h1 { font-size: 3.5rem; margin-bottom: 0.5rem; text-shadow: 0 0 20px rgba(240,171,252,0.5); }
+    .hero p { color: #e879f9; font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem; line-height: 1.6; }
+    
+    .panel-container { display: flex; max-width: 1200px; margin: 0 auto; gap: 2rem; padding: 0 2rem; }
+    .card {
+      flex: 1; background: rgba(74, 4, 78, 0.4);
+      border: 1px solid rgba(240,171,252,0.2); border-radius: 20px; padding: 2rem;
+      backdrop-filter: blur(24px); box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card:hover { transform: scale(1.02); border-color: rgba(240,171,252,0.6); }
+    .card h3 { margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; color: #f0abfc; }
+    
+    .recommendation-list { list-style: none; padding: 0; margin: 0; }
+    .rec-item {
+      padding: 1rem; margin-bottom: 1rem;
+      background: linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
+      border-left: 3px solid transparent; border-radius: 4px;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.2s; cursor: pointer;
+    }
+    .rec-item:hover { background: rgba(240,171,252,0.1); border-left-color: #f0abfc; }
+    .rec-item h4 { margin: 0 0 0.25rem 0; font-weight: 400; }
+    .rec-item small { color: #d946ef; }
+    .score-badge {
+      background: rgba(217, 70, 239, 0.2); color: #fdf4ff;
+      padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600;
+      border: 1px solid rgba(240,171,252,0.3);
+    }
+
+    button {
+      background: linear-gradient(135deg, #c026d3, #9333ea); color: white;
+      padding: 0.8rem 2rem; border: none; border-radius: 50px;
+      font-weight: 600; font-family: inherit; font-size: 1rem;
+      cursor: pointer; transition: all 0.3s;
+      box-shadow: 0 10px 20px rgba(192,38,211,0.3);
+    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(192,38,211,0.5); }
+  </style>
+</head>
+<body>
+  <div class="neon-mesh"></div>
+  <nav>
+    <div class="brand">AXIOM<span>HIVE</span></div>
+    <div>Media Stream Profile</div>
+  </nav>
+
+  <section class="hero">
+    <h1>Content Discovery</h1>
+    <p>Hot-swapped to the <code>MEDIA_STREAMING</code> preset. Prioritizes Collaborative Filtering (45%) to identify "Viewers like you also watched...".</p>
+    <button onclick="fetchRecommendations()">Generate My Feed</button>
+  </section>
+
+  <div class="panel-container">
+    <div class="card">
+      <h3>Active Profile</h3>
+      <div id="user-info">
+        <p><strong>Viewer ID:</strong> USR-001</p>
+        <p>Before generating the feed, the Engine Gateway will swap to the MEDIA logic.</p>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3>Up Next For You</h3>
+      <ul class="recommendation-list" id="rec-list">
+        <div style="color:#f0abfc; text-align:center; padding: 2rem; font-weight:300;">Ready to Stream</div>
+      </ul>
+      <p id="latency-metric" style="color: #d946ef; font-size: 0.9rem; margin-top: 1rem; text-align: right;"></p>
+    </div>
+  </div>
+
+  <script>
+    async function fetchRecommendations() {
+      const recList = document.getElementById('rec-list');
+      const metric = document.getElementById('latency-metric');
+      recList.innerHTML = '<div style="color:#f0abfc; text-align:center; padding: 2rem;">Connecting to Stream Gateway...</div>';
+      
+      try {
+        await fetch('/api/gateway/configure', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ domainKey: 'MEDIA_STREAMING' })
+        });
+        
+        recList.innerHTML = '<div style="color:#f0abfc; text-align:center; padding: 2rem;">Analyzing Viewer Matrix...</div>';
+        const response = await fetch('/api/recommendations/USR-001');
+        const data = await response.json();
+        
+        recList.innerHTML = '';
+        data.recommendations.forEach(rec => {
+          recList.innerHTML += `
+            <li class="rec-item">
+              <div>
+                <h4>${rec.product.sku || 'VOD Title'}</h4>
+                <small>${rec.product.category || 'Movie'}</small>
+              </div>
+              <span class="score-badge">Match: ${(rec.score * 10).toFixed(1)}%</span>
+            </li>
+          `;
+        });
+        
+        metric.innerHTML = `Matrix Ping: <b>${data.metadata.latencyMs}ms</b> | Profile: MEDIA_STREAMING`;
+      } catch (err) {
+        recList.innerHTML = `<div style="color:#ef4444; padding: 1rem;">Service Unavailable.</div>`;
+      }
+    }
+  </script>
+</body>
+</html>
