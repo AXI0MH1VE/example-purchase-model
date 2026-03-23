@@ -1,15 +1,34 @@
 /**
  * Headless Execution Layer — Domain & Vendor Swapping Engine
- * Asynchronous Node.js execution capable of parallel domain swaps.
  */
+const fs = require('fs');
+const path = require('path');
+const LOG_FILE = path.join(__dirname, '../data/swap_logs.json');
+
 class VendorSwapEngine {
   constructor() {
     this.configs = {
       prioritizeVendorA: false,
-      minSavingsThreshold: 0.05, // 5% minimum savings
+      minSavingsThreshold: 0.05,
       prioritizedVendorId: 'VENDOR_A'
     };
     this.logs = [];
+    this.loadLogs();
+  }
+
+  loadLogs() {
+    try {
+      if (fs.existsSync(LOG_FILE)) {
+        this.logs = JSON.parse(fs.readFileSync(LOG_FILE, 'utf8'));
+      }
+    } catch(e) { console.error('Failed to load swap logs', e); }
+  }
+
+  saveLogs() {
+    try {
+      if (!fs.existsSync(path.dirname(LOG_FILE))) fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
+      fs.writeFileSync(LOG_FILE, JSON.stringify(this.logs.slice(0, 1000), null, 2));
+    } catch(e) { console.error('Failed to save swap logs', e); }
   }
 
   updateConfig(newConfig) {
@@ -17,51 +36,36 @@ class VendorSwapEngine {
   }
 
   getLogs() {
-    return this.logs.slice(0, 50); // Return most recent 50 logs for visual feed
+    return this.logs; 
   }
 
-  // Simulated Asynchronous Headless Execution
-  async processTransaction(productRequest) {
+  async processTransaction(productRequest, tenantId) {
     const { sku, currentPrice, availableVendors } = productRequest;
-    
-    // Non-blocking async to handle massive simultaneous volume (SaaS pillar)
     await new Promise(resolve => setTimeout(resolve, 80));
 
-    let selectedVendor = null;
-    let maxSavings = 0;
+    let selectedVendor = null, maxSavings = 0;
 
     for (const vendor of (availableVendors || [])) {
       const savings = (currentPrice - vendor.price) / currentPrice;
-      
-      // Logic Orchestrator check: Always Prioritize overriding thresholds if cheaper at all
       if (this.configs.prioritizeVendorA && vendor.id === this.configs.prioritizedVendorId && savings > 0) {
-        selectedVendor = vendor;
-        maxSavings = savings;
-        break; // Immediate swap execution
+        selectedVendor = vendor; maxSavings = savings; break; 
       }
-
-      // Logic Orchestrator check: Standard Savings Threshold
       if (savings > this.configs.minSavingsThreshold && savings > maxSavings) {
-        maxSavings = savings;
-        selectedVendor = vendor;
+        maxSavings = savings; selectedVendor = vendor;
       }
     }
 
+    const baseLog = { timestamp: new Date().toISOString(), tenantId, sku };
+
     if (selectedVendor) {
-      this.logs.unshift({ 
-        timestamp: new Date().toISOString(), 
-        status: 'SUCCESS', 
-        sku, 
-        vendor: selectedVendor.id, 
-        savingsPct: (maxSavings * 100).toFixed(2) + '%',
-        savingsVal: (currentPrice - selectedVendor.price).toFixed(2)
-      });
-      return { success: true, swappedTo: selectedVendor.id, savings: maxSavings, originalPrice: currentPrice, finalPrice: selectedVendor.price };
+      this.logs.unshift({ ...baseLog, status: 'SUCCESS', vendor: selectedVendor.id, savingsPct: (maxSavings * 100).toFixed(2) + '%'});
+      this.saveLogs();
+      return { success: true, swappedTo: selectedVendor.id, savings: maxSavings, finalPrice: selectedVendor.price };
     } else {
-      this.logs.unshift({ timestamp: new Date().toISOString(), status: 'FAILED', sku, reason: 'Thresholds not met / No better vendor' });
+      this.logs.unshift({ ...baseLog, status: 'FAILED', reason: 'Thresholds not met' });
+      this.saveLogs();
       return { success: false, reason: 'Config thresholds not met' };
     }
   }
 }
-
 module.exports = new VendorSwapEngine();

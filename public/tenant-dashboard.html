@@ -27,6 +27,18 @@
     .log-success { border-left: 4px solid #000; }
     .log-fail { border-left: 4px solid #aaa; color: #888; }
     .badge { padding: 0.2rem 0.5rem; background: var(--accent-surface); border-radius: 4px; font-weight: 600; }
+
+    /* New styles replacing inline ones */
+    .dashboard-container { max-width: 1400px; margin: 2rem auto; }
+    .dashboard-title { margin-bottom: 2rem; }
+    .subtitle { margin-bottom: 2rem; }
+    .orchestrator-heading { margin-top: 3rem; margin-bottom: 1rem; }
+    .toggle-label { font-size: 0.9rem; font-weight: 500; }
+    .toggle-help { font-size: 0.8rem; color: #666; margin-top: 0.5rem; }
+    .sync-btn { margin-top: 2rem; width: 100%; }
+    .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .sim-btn { padding: 0.5rem 1rem; font-size: 0.8rem; }
+    .log-empty { border: none; }
   </style>
 </head>
 <body>
@@ -38,48 +50,48 @@
     </div>
   </header>
 
-  <div class="container" style="max-width: 1400px; margin: 2rem auto;">
-    <h2 style="margin-bottom: 2rem;">Domain Swap Execution Log</h2>
+  <div class="container dashboard-container">
+    <h2 class="dashboard-title">Domain Swap Execution Log</h2>
     
     <div class="dashboard-layout">
       <!-- Settings Panel -->
       <div class="portal-panel">
         <h3>Configuration Portal</h3>
-        <p class="utility-label" style="margin-bottom: 2rem;">No-Code Logic Matrix</p>
+        <p class="utility-label subtitle">No-Code Logic Matrix</p>
         
         <div class="form-group">
-          <label>Target Integration Hook URL</label>
-          <input type="text" id="target-url" value="https://api.axiomhive.com/v1/transaction/swap" readonly>
+          <label for="target-url">Target Integration Hook URL</label>
+          <input type="text" id="target-url" value="https://api.axiomhive.com/v1/transaction/swap" readonly title="Target URL" placeholder="Execution Address">
         </div>
         
         <div class="form-group">
-          <label>Minimum Savings Threshold (%)</label>
-          <input type="number" id="min-savings" value="5" min="1" max="100">
+          <label for="min-savings">Minimum Savings Threshold (%)</label>
+          <input type="number" id="min-savings" value="5" min="1" max="100" title="Savings Threshold %" placeholder="5">
         </div>
 
-        <h4 style="margin-top: 3rem; margin-bottom: 1rem;">Logic Orchestrator</h4>
+        <h4 class="orchestrator-heading">Logic Orchestrator</h4>
         
         <div class="toggle-row">
-          <span style="font-size: 0.9rem; font-weight: 500;">Prioritize Preferred Vendor</span>
-          <label class="switch">
-            <input type="checkbox" id="toggle-vendor-a">
+          <label for="toggle-vendor-a" class="toggle-label">Prioritize Preferred Vendor</label>
+          <label class="switch" for="toggle-vendor-a">
+            <input type="checkbox" id="toggle-vendor-a" title="Override margins">
             <span class="slider"></span>
           </label>
         </div>
-        <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Override margin rules if Vendor A is mathematically cheaper.</p>
+        <p class="toggle-help">Override margin rules if Vendor A is mathematically cheaper.</p>
 
-        <button onclick="syncConfig()" style="margin-top: 2rem; width: 100%;">Sync Rules to Edge</button>
+        <button onclick="syncConfig()" class="sync-btn" title="Deploy Thresholds">Sync Rules to Edge</button>
       </div>
 
       <!-- Live Feed Panel -->
       <div class="portal-panel">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div class="feed-header">
           <h3>Real-Time Transaction Feed</h3>
-          <button onclick="simulateTransaction()" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Push Test Data</button>
+          <button onclick="simulateTransaction()" class="sim-btn" title="Inject Mock Transaction">Push Test Data</button>
         </div>
         
         <ul class="log-feed" id="log-list">
-          <li class="log-item log-fail" style="border: none;">Awaiting Webhook Ingestion...</li>
+          <li class="log-item log-fail log-empty">Awaiting Webhook Ingestion...</li>
         </ul>
       </div>
     </div>
@@ -92,23 +104,25 @@
       
       const res = await fetch('/api/v1/admin/config', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer demo_key_123' },
         body: JSON.stringify({ 
           minSavingsThreshold: minSavings, 
           prioritizeVendorA: prioritize 
         })
       });
-      const data = await res.json();
+      await res.json();
       
       // Visual feedback
-      const btn = document.querySelector('button');
+      const btn = document.querySelector('.sync-btn');
       btn.innerText = 'Synchronized';
       setTimeout(() => btn.innerText = 'Sync Rules to Edge', 2000);
     }
 
     async function fetchLogs() {
       try {
-        const res = await fetch('/api/v1/admin/logs');
+        const res = await fetch('/api/v1/admin/logs', {
+          headers: { 'Authorization': 'Bearer demo_key_123' }
+        });
         const logs = await res.json();
         
         const list = document.getElementById('log-list');
@@ -121,7 +135,7 @@
             <li class="log-item ${isSuccess ? 'log-success' : 'log-fail'}">
               <span style="color: #666;">${new Date(log.timestamp).toLocaleTimeString()}</span>
               <span>
-                <strong>${log.sku}</strong> — ${isSuccess ? `Routed to ${log.vendor}` : log.reason}
+                <strong>${log.sku}</strong> — ${isSuccess ? 'Routed to ' + log.vendor : log.reason}
               </span>
               <span class="badge" style="color: ${isSuccess ? '#10b981' : '#ef4444'};">${isSuccess ? '+' + log.savingsPct : '0.00%'}</span>
             </li>
@@ -141,7 +155,7 @@
       };
       await fetch('/api/v1/transaction/swap', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer demo_key_123' },
         body: JSON.stringify(mockReq)
       });
       fetchLogs();
