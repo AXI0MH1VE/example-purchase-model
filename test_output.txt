@@ -158,31 +158,14 @@
 
       at log (engine/clickstream-analyzer.js:368:11)
 
-FAIL tests/api.test.js
+PASS tests/api.test.js
   API Gateway Integration Tests
-    ΓêÜ GET /api/recommendations/:userId returns 200 and JSON (49 ms)
-    ΓêÜ GET /api/metrics returns correct engine stats (6 ms)
-    ├ù POST /api/v1/transaction/swap identifies margin efficiency (107 ms)
+    ΓêÜ GET /api/recommendations/:userId returns 200 and JSON (60 ms)
+    ΓêÜ GET /api/metrics returns correct engine stats (7 ms)
+    ΓêÜ POST /api/v1/transaction/swap identifies margin efficiency (108 ms)
 
-  ΓùÅ API Gateway Integration Tests ΓÇ║ POST /api/v1/transaction/swap identifies margin efficiency
-
-    expect(received).toBe(expected) // Object.is equality
-
-    Expected: true
-    Received: false
-
-      60 |     const response = await request(app).post('/api/v1/transaction/swap').send(payload);
-      61 |     expect(response.status).toBe(200);
-    > 62 |     expect(response.body.success).toBe(true);
-         |                                   ^
-      63 |     expect(response.body.routedTo).toBe('SUPPLIER_B');
-      64 |     expect(response.body.marginEfficiency).toBeGreaterThan(0.3); // 1 - 120/200 = 0.4
-      65 |   });
-
-      at Object.toBe (tests/api.test.js:62:35)
-
-Test Suites: 1 failed, 1 total
-Tests:       1 failed, 2 passed, 3 total
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
 Snapshots:   0 total
-Time:        1.132 s
+Time:        1.565 s, estimated 2 s
 Ran all test suites matching tests/api.test.js.

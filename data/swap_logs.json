@@ -1,5 +1,13 @@
 [
   {
+    "timestamp": "2026-03-23T10:46:06.689Z",
+    "tenantId": "TENANT-001",
+    "sku": "SKU-001",
+    "status": "Fulfillment Optimized",
+    "supplier": "SUPPLIER_B",
+    "contributionMarginGain": "40.00%"
+  },
+  {
     "timestamp": "2026-03-23T10:45:03.819Z",
     "tenantId": "TENANT-001",
     "sku": "SKU-001",
