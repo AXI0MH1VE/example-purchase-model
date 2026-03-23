@@ -15,12 +15,14 @@ The **Smart Pairing Engine** (v1.0) is a sophisticated, high-performance recomme
 The engine utilizes a hybrid approach to circumvent the "cold start" problem and maximize Average Order Value (AOV).
 
 ### 1. Engine Layers
+
 - **Association Rule Learning (ARL):** Uses Apriori-inspired logic to identify "Customers who bought X also bought Y" patterns with high Lift and Confidence metrics.
 - **Collaborative Filtering (CF):** Analyzes user behavior across the entire dataset to find similarities between users and items.
 - **Content-Based Filtering (CB):** Recommends items based on intrinsic product attributes and categorical proximity.
 - **Clickstream Analyzer:** Real-time intent monitoring that scores user sessions based on navigation patterns (e.g., rapid scrolling, repeat views, cart additions).
 
 ### 2. Behavioral Intelligence
+
 - **Bundle Builder:** Dynamically generates high-AOV bundles (Entry, Mid, High tiers).
 - **Social Proof Layer:** Injects real-time "Bandwagon" metrics (e.g., "42 others are viewing this right now").
 - **Scarcity & Urgency:** Implements Loss Aversion strategies using inventory and popularity signals.
@@ -39,33 +41,39 @@ The engine utilizes a hybrid approach to circumvent the "cold start" problem and
 ## ◈ Getting Started
 
 ### Prerequisites
+
 - [Node.js](https://nodejs.org/) (v16 or higher)
 - npm or yarn
 
 ### Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/AXIOMHIVE/example-purchase-model.git
    cd example-purchase-model
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 3. **Generate synthetic data:**
+
    ```bash
    npm run generate-data
    ```
 
 4. **Launch the engine:**
+
    ```bash
    npm start
    ```
 
 5. **Access the Dashboard:**
+
    Open `http://localhost:3000` in your browser.
 
 ---

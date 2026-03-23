@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Axiom Hive | Retail Smart Pairs</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
@@ -19,7 +20,7 @@
     }
     nav {
       padding: 1rem 3rem; background: rgba(15, 23, 42, 0.8);
-      backdrop-flex: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1);
+      -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1);
       display: flex; justify-content: space-between; align-items: center;
     }
     .brand { font-weight: 600; font-size: 1.5rem; letter-spacing: -0.5px; }
@@ -38,7 +39,7 @@
       flex: 1; background: rgba(30, 41, 59, 0.5);
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 16px; padding: 2rem;
-      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       transition: transform 0.3s ease, border-color 0.3s ease;
     }
@@ -67,6 +68,10 @@
       cursor: pointer; transition: all 0.2s;
     }
     button:hover { background: #7dd3fc; box-shadow: 0 0 15px rgba(56, 189, 248, 0.5); }
+
+    .empty-message { color: #64748b; text-align: center; padding: 2rem; list-style: none; }
+    .error-message { color: #ef4444; padding: 1rem; list-style: none; }
+    .metric-text { color: #64748b; font-size: 0.9rem; margin-top: 1rem; text-align: right; }
   </style>
 </head>
 <body>
@@ -93,9 +98,9 @@
     <div class="card">
       <h3>Algorithm Outputs</h3>
       <ul class="recommendation-list" id="rec-list">
-        <div style="color:#64748b; text-align:center; padding: 2rem;">Awaiting Engine Response...</div>
+        <li class="empty-message">Awaiting Engine Response...</li>
       </ul>
-      <p id="latency-metric" style="color: #64748b; font-size: 0.9rem; margin-top: 1rem; text-align: right;"></p>
+      <p id="latency-metric" class="metric-text"></p>
     </div>
   </div>
 
@@ -103,7 +108,7 @@
     async function fetchRecommendations() {
       const recList = document.getElementById('rec-list');
       const metric = document.getElementById('latency-metric');
-      recList.innerHTML = '<div style="color:#64748b; text-align:center; padding: 2rem;">Processing Multi-Layer Matrix...</div>';
+      recList.innerHTML = '<li class="empty-message">Processing Multi-Layer Matrix...</li>';
       
       try {
         const response = await fetch('/api/recommendations/USR-001');
@@ -129,7 +134,7 @@
           <p><strong>Applied Rule Sets:</strong> ARL (40%), CF (30%), CB (15%), Pop (15%)</p>
         `;
       } catch (err) {
-        recList.innerHTML = `<div style="color:#ef4444; padding: 1rem;">Engine Offline or Unreachable.</div>`;
+        recList.innerHTML = `<li class="error-message">Engine Offline or Unreachable.</li>`;
       }
     }
   </script>
