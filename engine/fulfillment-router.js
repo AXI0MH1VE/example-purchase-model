@@ -1,28 +1,16 @@
 /**
- * Axiom Hive — Dynamic Fulfillment Router
- * =========================================
- * This engine elevates the platform from a recommendation tool to a strategic 
- * fulfillment orchestrator. It identifies superior wholesale terms in real-time
- * and routes orders to preferred suppliers to maximize "Contribution Margin."
- * 
- * Objectives:
- * 1. High-velocity routing of checkout requests.
- * 2. Protection of Profit/Margin via procurement efficiency.
- * 3. Logging for transparency and "Success Fee" auditing.
+ * Headless Execution Layer — Fulfillment Optimization & Routing Engine
  */
-
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
-const LOG_FILE = path.join(__dirname, '../data/swap_logs.json');
+const LOG_FILE = path.join(__dirname, '../data/fulfillment_logs.json');
 
 class FulfillmentRouter {
   constructor() {
     this.configs = {
-      prioritizePreferredSupplier: true,
-      minMarginImprovementThreshold: 0.05, // 5% efficiency minimum
-      preferredSupplierId: 'SUPPLIER_NORTH_AMERICA'
+      prioritizeVendorA: false,
+      minSavingsThreshold: 0.05,
+      prioritizedVendorId: 'VENDOR_A'
     };
     this.logs = [];
     this.loadLogs();
@@ -33,79 +21,51 @@ class FulfillmentRouter {
       if (fs.existsSync(LOG_FILE)) {
         this.logs = JSON.parse(fs.readFileSync(LOG_FILE, 'utf8'));
       }
-    } catch(e) { console.error('[Fulfillment Router] Failed to load logs', e); }
+    } catch(e) { console.error('Failed to load fulfillment logs', e); }
   }
 
   saveLogs() {
     try {
       if (!fs.existsSync(path.dirname(LOG_FILE))) fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
       fs.writeFileSync(LOG_FILE, JSON.stringify(this.logs.slice(0, 1000), null, 2));
-    } catch(e) { console.error('[Fulfillment Router] Failed to save logs', e); }
+    } catch(e) { console.error('Failed to save fulfillment logs', e); }
   }
 
   updateConfig(newConfig) {
-    this.configs = Object.assign(this.configs, newConfig);
+    this.configs = { ...this.configs, ...newConfig };
   }
 
   getLogs() {
     return this.logs; 
   }
 
-  /**
-   * Process a checkout transaction and identify superior fulfillment terms.
-   * @param {Object} orderRequest - { sku, currentPrice, supplierNetwork }
-   * @param {string} tenantId - The SaaS client ID
-   */
-  async processTransaction(orderRequest, tenantId) {
-    const { sku, currentPrice, supplierNetwork } = orderRequest;
-    
-    // Simulate API latency for integrated wholesale networks (TopDawg, Spocket, etc.)
+  async processTransaction(productRequest, tenantId) {
+    const { sku, currentPrice, availableVendors } = productRequest;
     await new Promise(resolve => setTimeout(resolve, 80));
 
-    let selectedSupplier = null;
-    let marginGain = 0;
+    let selectedVendor = null, maxSavings = 0;
 
-    for (const supplier of (supplierNetwork || [])) {
-      const improvement = (currentPrice - supplier.wholesaleCost) / currentPrice;
-      
-      // Check for Preferred Supplier status
-      if (this.configs.prioritizePreferredSupplier && supplier.id === this.configs.preferredSupplierId && improvement > 0) {
-        selectedSupplier = supplier; 
-        marginGain = improvement; 
-        break; 
+    for (const vendor of (availableVendors || [])) {
+      const savings = (currentPrice - vendor.price) / currentPrice;
+      if (this.configs.prioritizeVendorA && vendor.id === this.configs.prioritizedVendorId && savings > 0) {
+        selectedVendor = vendor; maxSavings = savings; break; 
       }
-
-      // Check for Maximum Margin Optimization
-      if (improvement > this.configs.minMarginImprovementThreshold && improvement > marginGain) {
-        marginGain = improvement; 
-        selectedSupplier = supplier;
+      if (savings > this.configs.minSavingsThreshold && savings > maxSavings) {
+        maxSavings = savings; selectedVendor = vendor;
       }
     }
 
-    const auditEntry = { timestamp: new Date().toISOString(), tenantId, sku };
+    const baseLog = { timestamp: new Date().toISOString(), tenantId, sku };
 
-    if (selectedSupplier) {
-      const entry = { 
-        ...auditEntry, 
-        status: 'Fulfillment Optimized', 
-        supplier: selectedSupplier.id, 
-        contributionMarginGain: (marginGain * 100).toFixed(2) + '%'
-      };
-      this.logs.unshift(entry);
+    if (selectedVendor) {
+      this.logs.unshift({ ...baseLog, status: 'SUCCESS', vendor: selectedVendor.id, savingsPct: (maxSavings * 100).toFixed(2) + '%'});
       this.saveLogs();
-      
-      return { 
-        success: true, 
-        routedTo: selectedSupplier.id, 
-        marginEfficiency: marginGain, 
-        finalProcurementCost: selectedSupplier.wholesaleCost 
-      };
+      return { success: true, swappedTo: selectedVendor.id, savings: maxSavings, finalPrice: selectedVendor.price };
     } else {
-      this.logs.unshift({ ...auditEntry, status: 'No Enhancement Identified', reason: 'Thresholds not met' });
+      this.logs.unshift({ ...baseLog, status: 'FAILED', reason: 'Thresholds not met' });
       this.saveLogs();
-      return { success: false, reason: 'Procurement thresholds not met' };
+      return { success: false, reason: 'Config thresholds not met' };
     }
   }
 }
-
 module.exports = new FulfillmentRouter();

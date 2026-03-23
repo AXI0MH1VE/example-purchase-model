@@ -11,37 +11,44 @@ The **Smart Pairing Engine (v2.0)** is a high-performance, multi-tenant SaaS pla
 ---
 
 ## ◈ The Unified Orchestration Workflow
+
 The engine unifies fragmented features into a streamlined 5-step lifecycle for enterprise deployment:
 
-1.  **Ingestion:** Connect any dataset (Retail, Legal, Media) to the API Gateway.
-2.  **Configuration:** Set operational rules (e.g., *Security > Speed*) via domain-specific presets.
-3.  **Deployment:** Logic is rendered to the end-user via interactive non-invasive connectors.
-4.  **Monitoring:** Native A/B testing and Hot-Reload swap winning algorithms instantly.
-5.  **Governance:** Every decision is recorded for full compliance and corporate audit.
+1. **Ingestion:** Connect any dataset (Retail, Legal, Media) to the API Gateway.
+2. **Configuration:** Set operational rules (e.g., *Security > Speed*) via domain-specific presets.
+3. **Deployment:** Logic is rendered to the end-user via interactive non-invasive connectors.
+4. **Monitoring:** Native A/B testing and Hot-Reload swap winning algorithms instantly.
+5. **Governance:** Every decision is recorded for full compliance and corporate audit.
 
 ---
 
 ## ◈ Key Functional Pillars
 
 ### 1. Multi-Layer Recommendation Core
+
 - **Association Rule Learning (ARL):** Identifies co-purchase patterns (Frequent Itemsets).
 - **Collaborative Filtering (CF):** Computes user-user and item-item similarity vectors.
 - **Content-Based Filtering (CB):** Matches product attributes using distance metrics.
 - **Popularity & Trending:** Injects real-time demand signals into the final score.
 
 ### 2. Proprietary Sales Optimization Engine
+
 Our advanced `sales-optimization.js` module uses machine learning to dissect user interaction pathways from discovery to transaction. It identifies:
+
 - **Conversion Pathways:** Mapped successful routes that drive revenue.
 - **Refinement Flags:** Automatic identification of friction in UI Hierarchy, Data Retrieval, and Checkout Flow.
 
 ### 3. Fulfillment Router (Optimization Engine)
+
 Intercepts checkout requests to dynamically route fulfillment through a network of preferred suppliers.
+
 - **Efficiency Gains:** Identifies identical products with superior wholesale terms.
 - **Margin Protection:** Silently optimizes the supply chain to capture maximum profit per unit.
 
 ---
 
 ## ◈ Commercial ROI
+
 - **Reduced Overhead:** One engineer can manage systems typically requiring a full DevOps team.
 - **Speed to Market:** Launch domain-specific pilots in days, not months.
 - **Risk Mitigation:** Embedded audit modules ensure compliance while experimenting with new logic.
@@ -49,6 +56,7 @@ Intercepts checkout requests to dynamically route fulfillment through a network 
 ---
 
 ## ◈ Interactive Demos
+
 Launch these endpoints locally to experience the engine's versatility:
 - [**Retail Profile**](http://localhost:3000/demo-retail.html) (AOV Focused)
 - [**Legal Discovery**](http://localhost:3000/demo-legal.html) (Precendent Focused)
@@ -57,6 +65,7 @@ Launch these endpoints locally to experience the engine's versatility:
 ---
 
 ## ◈ Technical Stack
+
 - **Architecture:** Node.js (Express), Modular Hub-and-Spoke
 - **Testing:** Jest + Supertest (Continuous Integration via GitHub Actions)
 - **Performance:** Sub-200ms Latency Benchmark
@@ -78,15 +87,16 @@ Launch these endpoints locally to experience the engine's versatility:
 
 ## ◈ Getting Started
 
-1.  **Installation:** `npm install`
-2.  **Environment:** Provision `.env` from `.env.example`.
-3.  **Production Boot:** `npm start`
-4.  **Verification:** `npm test` (Runs algorithm and API latency benchmarks).
+1. **Installation:** `npm install`
+2. **Environment:** Provision `.env` from `.env.example`.
+3. **Production Boot:** `npm start`
+4. **Verification:** `npm test` (Runs algorithm and API latency benchmarks).
 
 ---
 
 ## ◈ License
+
 **PROPRIETARY — AXIOM HIVE / NMG**  
 Unauthorized copying or distribution of this software is strictly prohibited.
 
-*Strategic Engineering — March 2026 Release v2.0*
+### Strategic Engineering — March 2026 Release v2.0

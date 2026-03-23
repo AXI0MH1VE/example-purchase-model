@@ -51,7 +51,7 @@
   </header>
 
   <div class="container dashboard-container">
-    <h2 class="dashboard-title">Domain Swap Execution Log</h2>
+    <h2 class="dashboard-title">Fulfillment Router Execution Log</h2>
     
     <div class="dashboard-layout">
       <!-- Settings Panel -->
@@ -72,13 +72,13 @@
         <h4 class="orchestrator-heading">Logic Orchestrator</h4>
         
         <div class="toggle-row">
-          <label for="toggle-vendor-a" class="toggle-label">Prioritize Preferred Vendor</label>
+          <label for="toggle-vendor-a" class="toggle-label">Prioritize Preferred Supplier</label>
           <label class="switch" for="toggle-vendor-a">
             <input type="checkbox" id="toggle-vendor-a" title="Override margins">
             <span class="slider"></span>
           </label>
         </div>
-        <p class="toggle-help">Override margin rules if Vendor A is mathematically cheaper.</p>
+        <p class="toggle-help">Override margin rules if Supplier A is mathematically cheaper.</p>
 
         <button onclick="syncConfig()" class="sync-btn" title="Deploy Thresholds">Sync Rules to Edge</button>
       </div>
@@ -86,12 +86,12 @@
       <!-- Live Feed Panel -->
       <div class="portal-panel">
         <div class="feed-header">
-          <h3>Real-Time Transaction Feed</h3>
+          <h3>Real-Time Fulfillment Feed</h3>
           <button onclick="simulateTransaction()" class="sim-btn" title="Inject Mock Transaction">Push Test Data</button>
         </div>
         
         <ul class="log-feed" id="log-list">
-          <li class="log-item log-fail log-empty">Awaiting Webhook Ingestion...</li>
+          <li class="log-item log-fail log-empty">Awaiting Fulfillment Ingestion...</li>
         </ul>
       </div>
     </div>

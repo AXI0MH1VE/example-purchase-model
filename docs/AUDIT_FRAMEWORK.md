@@ -1,11 +1,13 @@
 # E-commerce Optimization Audit Framework (2025)
 
 ## ◈ Overview
+
 The "Audit Magnet" is our primary lead generation tool. It identifies site-specific revenue leaks and establishes our team as authorized experts who deliver measurable outcomes.
 
 ---
 
 ## ◈ Phase 1: Technical Debt Assessment
+
 Evaluating site health to ensure the Axiom Hive engine operates on a fast, optimized host.
 
 - [ ] **Site Speed Analysis**: Measure TTFB (Time to First Byte) and LCP (Largest Contentful Paint).
@@ -15,16 +17,18 @@ Evaluating site health to ensure the Axiom Hive engine operates on a fast, optim
 ---
 
 ## ◈ Phase 2: Checkout Friction Analysis
+
 Reducing cognitive load to mitigate the 70%+ average cart abandonment rate.
 
-1.  **Element Count**: Identify all fields/clicks from Cart to Confirmation. 
-    - *Goal*: Maximum 12 elements.
-2.  **Form Optimization**: Remove duplicate address requirements; implement one-click payouts (Apple Pay, Shop Pay).
-3.  **Trust Signals**: Audit the placement of reviews, security badges, and return policies at the point of intent.
+1. **Element Count**: Identify all fields/clicks from Cart to Confirmation.
+   - *Goal*: Maximum 12 elements.
+2. **Form Optimization**: Remove duplicate address requirements; implement one-click payouts (Apple Pay, Shop Pay).
+3. **Trust Signals**: Audit the placement of reviews, security badges, and return policies at the point of intent.
 
 ---
 
 ## ◈ Phase 3: AOV & Margin Benchmarking
+
 Quantifying the "Lift" potential for the Axiom Hive engine.
 
 | Metric | Store Current | 2025 Industry Benchmark | Potential Lift |
@@ -36,6 +40,7 @@ Quantifying the "Lift" potential for the Axiom Hive engine.
 ---
 
 ## ◈ Phase 4: Behavioral Leak Detection
+
 Utilizing clickstream analysis to locate where revenue is lost.
 
 - **Abandonment Points**: Identify high-bounce steps in the user interaction pathway.
@@ -45,7 +50,9 @@ Utilizing clickstream analysis to locate where revenue is lost.
 ---
 
 ## ◈ Audit Outcome
+
 Deliver a white-label **Optimization Roadmap** highlighting:
-1.  Top 3 Revenue Leaks.
-2.  Projected monthly "Lift" if the Axiom Hive engine is integrated.
-3.  Calculated ROI for the buy-in.
+
+1. Top 3 Revenue Leaks.
+2. Projected monthly "Lift" if the Axiom Hive engine is integrated.
+3. Calculated ROI for the buy-in.
