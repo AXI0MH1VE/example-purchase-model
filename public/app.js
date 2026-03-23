@@ -53,17 +53,23 @@ const sectionNames = {
   intent: 'Intent Monitor',
   bundles: 'Bundle Builder',
   recommendations: 'User Recommendations',
+  lifecycle: 'Lifecycle Sync',
 };
+
 
 window.navigateTo = function (section) {
   // Update breadcrumb
   const bc = document.getElementById('breadcrumb-current');
   bc.textContent = sectionNames[section] || 'Dashboard';
 
-  // Update active nav item
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  const activeBtn = document.querySelector(`[data-section="${section}"]`);
-  if (activeBtn) activeBtn.classList.add('active');
+  // Show/Hide sections
+  document.querySelectorAll('.section').forEach(el => {
+    if (el.id === `section-${section}`) {
+      el.style.display = 'grid'; // Re-enable grid display
+    } else {
+      el.style.display = 'none';
+    }
+  });
 
   // Scroll to section
   const target = document.getElementById(`section-${section}`);
@@ -71,6 +77,7 @@ window.navigateTo = function (section) {
     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 };
+
 
 // ─── Data Loading ───────────────────────────────────────────────────────────
 async function loadMetrics() {
@@ -583,3 +590,85 @@ function renderLoadingSkeleton(lines) {
     `<div class="loading-skeleton skeleton-line" style="width: ${90 - i * 6}%; height: 40px; margin-bottom: 6px;"></div>`
   ).join('');
 }
+
+// ─── Lifecycle Sync ──────────────────────────────────────────────────────────
+window.triggerLifecycleSync = async function() {
+  const btn = document.getElementById('lifecycle-sync-btn');
+  const results = document.getElementById('lifecycle-results');
+  
+  btn.disabled = true;
+  btn.innerHTML = '<span class="icon">⌛</span> Analyzing Trending Charts...';
+  results.innerHTML = renderLoadingSkeleton(4);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/lifecycle/sync`);
+    const data = await res.json();
+
+    // Reload catalog data
+    await loadProducts();
+    await loadMetrics();
+    
+    // Update UI elements
+    populateProductSelect();
+    renderMetrics();
+    
+    renderLifecycleResults(data);
+    
+    btn.disabled = false;
+    btn.innerHTML = '<span class="icon">✅</span> Sync Complete';
+    setTimeout(() => {
+      btn.innerHTML = '<span class="icon">🔄</span> Sync Catalog with Trending Charts';
+    }, 3000);
+
+  } catch (err) {
+    console.error('Lifecycle sync failed:', err);
+    results.innerHTML = '<div class="empty-state"><p>Error synchronizing lifecycle data</p></div>';
+    btn.disabled = false;
+  }
+};
+
+function renderLifecycleResults(data) {
+  const container = document.getElementById('lifecycle-results');
+  
+  container.innerHTML = `
+    <div class="audit-grid">
+      <div class="audit-block">
+        <h4>Synthesized New Products</h4>
+        ${data.addedProducts.length > 0 ? data.addedProducts.map(p => `
+          <div class="added-item">
+            <div style="font-weight: 700;">${p.name}</div>
+            <div class="product-meta">
+              <span class="product-category">${p.category}</span>
+              <span class="sku">${p.sku}</span>
+            </div>
+          </div>
+        `).join('') : '<p style="font-size: 0.8rem; color: var(--text-tertiary);">No new products added.</p>'}
+      </div>
+      
+      <div class="audit-block">
+        <h4>Stagnant SKUs Removed</h4>
+        <div style="max-height: 150px; overflow-y: auto;">
+          ${data.removedSkus.length > 0 ? data.removedSkus.map(sku => `
+            <div class="removed-item">${sku}</div>
+          `).join('') : '<p style="font-size: 0.8rem; color: var(--text-tertiary);">No products removed.</p>'}
+        </div>
+      </div>
+    </div>
+    
+    <div style="margin-top: 20px; border-top: 1px dashed var(--border-strong); padding-top: 10px;">
+      <div class="audit-stat">
+        <span>Analytics Sample Period</span>
+        <span>Axiom Hive Real-Time</span>
+      </div>
+      <div class="audit-stat">
+        <span>Average Inventory Velocity</span>
+        <span>${data.stats.averageVelocity}x</span>
+      </div>
+      <div class="audit-stat">
+        <span>High-Growth Threshold</span>
+        <span>${data.stats.topCategories.join(', ')}</span>
+      </div>
+    </div>
+  `;
+}
+

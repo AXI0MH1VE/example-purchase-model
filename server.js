@@ -25,6 +25,8 @@ const { buildContentBasedFilter } = require('./engine/content-based');
 const { generateSmartPairings, computePopularityScores } = require('./engine/hybrid-recommender');
 const { buildClickstreamAnalyzer, analyzeSession } = require('./engine/clickstream-analyzer');
 const { generateBehavioralPackage } = require('./engine/behavioral-economics');
+const { auditProductLifecycle } = require('./engine/lifecycle-manager');
+
 
 // ─── Initialize Application ────────────────────────────────────────────────
 const app = express();
@@ -46,28 +48,22 @@ const bootStart = Date.now();
 
 // Step 1: Generate synthetic dataset
 const dataset = generateDataset();
-const { products, users, orders, clickstream } = dataset;
+let { products, users, orders, clickstream } = dataset;
 
-// Step 2: Build Association Rule Learning Engine
-const arlEngine = buildAssociationRules(orders, products);
+// Step 2-6: Build Engines (wrappers for easy re-initialization)
+let arlEngine, cfEngine, cbEngine, clickstreamEngine, popularityScores, productMap;
 
-// Step 3: Build Collaborative Filtering Engine
-const cfEngine = buildCollaborativeFilter(orders, products, users);
+function initializeEngines() {
+  arlEngine = buildAssociationRules(orders, products);
+  cfEngine = buildCollaborativeFilter(orders, products, users);
+  cbEngine = buildContentBasedFilter(products, orders);
+  clickstreamEngine = buildClickstreamAnalyzer(clickstream);
+  popularityScores = computePopularityScores(products, orders);
+  productMap = new Map(products.map(p => [p.sku, p]));
+}
 
-// Step 4: Build Content-Based Filtering Engine
-const cbEngine = buildContentBasedFilter(products, orders);
+initializeEngines();
 
-// Step 5: Build Clickstream Analyzer
-const clickstreamEngine = buildClickstreamAnalyzer(clickstream);
-
-// Step 6: Compute popularity scores
-const popularityScores = computePopularityScores(products, orders);
-
-const bootTime = Date.now() - bootStart;
-console.log(`\n✅ All engines initialized in ${bootTime}ms`);
-
-// Pre-compute product lookup
-const productMap = new Map(products.map(p => [p.sku, p]));
 
 // ─── API Endpoints ──────────────────────────────────────────────────────────
 
@@ -349,6 +345,31 @@ app.get('/api/sessions', (req, res) => {
     stats: clickstreamEngine.stats,
   });
 });
+
+/**
+ * GET /api/lifecycle/sync
+ * Performs automated catalog audit, removing stagnant items and adding trending ones.
+ */
+app.get('/api/lifecycle/sync', (req, res) => {
+  const start = Date.now();
+  
+  const auditResults = auditProductLifecycle(products, orders);
+  
+  // Update the in-memory catalog
+  products = auditResults.updatedCatalog;
+  
+  // Re-initialize engines with the new catalog
+  initializeEngines();
+  
+  console.log(`\n🔄 Catalog Synced: Removed ${auditResults.removedCount}, Added ${auditResults.addedCount}`);
+  
+  res.json({
+    ...auditResults,
+    latencyMs: Date.now() - start,
+    message: "Catalog successfully synchronized with trending charts."
+  });
+});
+
 
 // ─── Fallback: Serve Dashboard ──────────────────────────────────────────────
 app.get('*', (req, res) => {

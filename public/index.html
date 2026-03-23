@@ -48,7 +48,11 @@
         <button class="nav-item" data-section="recommendations" onclick="navigateTo('recommendations')">
           <span class="nav-icon">◎</span> User Recs
         </button>
+        <button class="nav-item" data-section="lifecycle" onclick="navigateTo('lifecycle')">
+          <span class="nav-icon">♾</span> Lifecycle Sync
+        </button>
       </nav>
+
 
       <div class="sidebar-footer">
         <p>v1.0 · March 2026</p>
@@ -266,6 +270,32 @@
             </div>
           </div>
         </section>
+
+        <!-- ── Lifecycle Management ──────────────────────────────────── -->
+        <section class="section dashboard-grid" id="section-lifecycle">
+
+          <div class="card full-width">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">♾</span> Lifecycle Intelligence Sync</div>
+              <div class="card-badge">Automated Catalog Refinement</div>
+            </div>
+            <div class="card-body">
+              <div class="lifecycle-controls">
+                <button class="action-button" id="lifecycle-sync-btn" onclick="triggerLifecycleSync()">
+                  <span class="icon">🔄</span> Sync Catalog with Trending Charts
+                </button>
+                <p class="helper-text">This will identify stagnant products for removal and synthesize new SKUs in trending categories.</p>
+              </div>
+              <div id="lifecycle-results" class="lifecycle-results-panel">
+                <div class="empty-state">
+                  <div class="icon">♾</div>
+                  <p>Trigger a sync to see automated catalog adjustments</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
 
         <!-- ── Social Proof + Scarcity ───────────────────────────────── -->
         <section class="section dashboard-grid" id="behavioral-section">

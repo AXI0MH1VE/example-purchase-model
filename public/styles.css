@@ -353,7 +353,13 @@ body {
 
 .section {
   animation: pageEntry var(--duration-page) var(--ease) both;
+  display: none; /* Default hiddex */
 }
+
+.section#section-overview {
+  display: grid; /* Initial active section */
+}
+
 
 @keyframes pageEntry {
   from {
@@ -581,3 +587,93 @@ body {
   font-family: var(--font-mono);
 }
 
+/* ── Lifecycle Sync ──────────────────────────────────────────────────────── */
+.lifecycle-controls {
+  margin-bottom: var(--space-4);
+  text-align: center;
+}
+
+.action-button {
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border: none;
+  padding: 12px 32px;
+  font-family: var(--font-primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform var(--duration-micro) var(--ease), background var(--duration-micro) var(--ease);
+  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.action-button:hover {
+  background: var(--text-secondary);
+  transform: translateY(-1px);
+}
+
+.action-button:active {
+  transform: scale(0.98);
+}
+
+.helper-text {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: 12px;
+  font-family: var(--font-mono);
+}
+
+.lifecycle-results-panel {
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  padding: var(--space-4);
+  min-height: 200px;
+}
+
+.audit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.audit-block h4 {
+  font-size: 10pt;
+  font-variant: small-caps;
+  font-family: var(--font-mono);
+  margin-bottom: 12px;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border-strong);
+  padding-bottom: 4px;
+}
+
+.added-item {
+  background: var(--bg-primary);
+  padding: 8px 12px;
+  border-left: 3px solid var(--text-primary);
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+
+.added-item .sku {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+.removed-item {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+
+.audit-stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border-strong);
+  font-size: 0.85rem;
+}
