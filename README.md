@@ -58,6 +58,7 @@ Intercepts checkout requests to dynamically route fulfillment through a network 
 ## ◈ Interactive Demos
 
 Launch these endpoints locally to experience the engine's versatility:
+
 - [**Retail Profile**](http://localhost:3000/demo-retail.html) (AOV Focused)
 - [**Legal Discovery**](http://localhost:3000/demo-legal.html) (Precendent Focused)
 - [**Media Streaming**](http://localhost:3000/demo-media.html) (Engagement Focused)
