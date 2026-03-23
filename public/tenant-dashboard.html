@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axiom Hive | SaaS Orchestrator</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Specific styles for the orchestrator portal */
+    .dashboard-layout { display: grid; grid-template-columns: 350px 1fr; gap: 2rem; height: calc(100vh - 150px); }
+    .portal-panel { background: rgba(0,0,0,0.02); border: 1px solid var(--border-lines); padding: 2rem; overflow-y: auto; }
+    
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-family: var(--font-utility); margin-bottom: 0.5rem; color: #555; }
+    .form-group input[type="text"], .form-group input[type="number"] { width: 100%; padding: 0.8rem; border: 1px solid var(--border-lines); background: transparent; font-family: var(--font-body); outline: none; }
+    
+    .toggle-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-lines); padding: 1rem 0; }
+    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-lines); transition: .2s; }
+    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .2s; }
+    input:checked + .slider { background-color: var(--primary-text); }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    .log-feed { list-style: none; padding: 0; margin: 0; font-family: var(--font-utility); font-size: 0.85rem; }
+    .log-item { padding: 1rem; border-bottom: 1px dashed var(--border-lines); display: grid; grid-template-columns: 80px 1fr auto; gap: 1rem; align-items: center; }
+    .log-success { border-left: 4px solid #000; }
+    .log-fail { border-left: 4px solid #aaa; color: #888; }
+    .badge { padding: 0.2rem 0.5rem; background: var(--accent-surface); border-radius: 4px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">AXIOM HIVE SaaS Engine</div>
+    <div class="header-utils">
+      <span class="utility-label">TENANT: NMG_COMMERCIAL</span>
+      <span class="utility-label status-dot">● ACTIVE</span>
+    </div>
+  </header>
+
+  <div class="container" style="max-width: 1400px; margin: 2rem auto;">
+    <h2 style="margin-bottom: 2rem;">Domain Swap Execution Log</h2>
+    
+    <div class="dashboard-layout">
+      <!-- Settings Panel -->
+      <div class="portal-panel">
+        <h3>Configuration Portal</h3>
+        <p class="utility-label" style="margin-bottom: 2rem;">No-Code Logic Matrix</p>
+        
+        <div class="form-group">
+          <label>Target Integration Hook URL</label>
+          <input type="text" id="target-url" value="https://api.axiomhive.com/v1/transaction/swap" readonly>
+        </div>
+        
+        <div class="form-group">
+          <label>Minimum Savings Threshold (%)</label>
+          <input type="number" id="min-savings" value="5" min="1" max="100">
+        </div>
+
+        <h4 style="margin-top: 3rem; margin-bottom: 1rem;">Logic Orchestrator</h4>
+        
+        <div class="toggle-row">
+          <span style="font-size: 0.9rem; font-weight: 500;">Prioritize Preferred Vendor</span>
+          <label class="switch">
+            <input type="checkbox" id="toggle-vendor-a">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Override margin rules if Vendor A is mathematically cheaper.</p>
+
+        <button onclick="syncConfig()" style="margin-top: 2rem; width: 100%;">Sync Rules to Edge</button>
+      </div>
+
+      <!-- Live Feed Panel -->
+      <div class="portal-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h3>Real-Time Transaction Feed</h3>
+          <button onclick="simulateTransaction()" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Push Test Data</button>
+        </div>
+        
+        <ul class="log-feed" id="log-list">
+          <li class="log-item log-fail" style="border: none;">Awaiting Webhook Ingestion...</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function syncConfig() {
+      const minSavings = document.getElementById('min-savings').value / 100;
+      const prioritize = document.getElementById('toggle-vendor-a').checked;
+      
+      const res = await fetch('/api/v1/admin/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          minSavingsThreshold: minSavings, 
+          prioritizeVendorA: prioritize 
+        })
+      });
+      const data = await res.json();
+      
+      // Visual feedback
+      const btn = document.querySelector('button');
+      btn.innerText = 'Synchronized';
+      setTimeout(() => btn.innerText = 'Sync Rules to Edge', 2000);
+    }
+
+    async function fetchLogs() {
+      try {
+        const res = await fetch('/api/v1/admin/logs');
+        const logs = await res.json();
+        
+        const list = document.getElementById('log-list');
+        if(logs.length === 0) return;
+        
+        list.innerHTML = '';
+        logs.forEach(log => {
+          const isSuccess = log.status === 'SUCCESS';
+          list.innerHTML += `
+            <li class="log-item ${isSuccess ? 'log-success' : 'log-fail'}">
+              <span style="color: #666;">${new Date(log.timestamp).toLocaleTimeString()}</span>
+              <span>
+                <strong>${log.sku}</strong> — ${isSuccess ? `Routed to ${log.vendor}` : log.reason}
+              </span>
+              <span class="badge" style="color: ${isSuccess ? '#10b981' : '#ef4444'};">${isSuccess ? '+' + log.savingsPct : '0.00%'}</span>
+            </li>
+          `;
+        });
+      } catch (err) {}
+    }
+
+    async function simulateTransaction() {
+      const mockReq = {
+        sku: 'PROD-' + Math.floor(Math.random()*100),
+        currentPrice: 100,
+        availableVendors: [
+          { id: 'VENDOR_A', price: Math.floor(Math.random()*(110-85)+85) },
+          { id: 'VENDOR_B', price: Math.floor(Math.random()*(100-80)+80) }
+        ]
+      };
+      await fetch('/api/v1/transaction/swap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mockReq)
+      });
+      fetchLogs();
+    }
+
+    setInterval(fetchLogs, 2000);
+  </script>
+</body>
+</html>

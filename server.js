@@ -25,6 +25,7 @@ const { generateBehavioralPackage } = require('./engine/behavioral-economics');
 // ─── Modular Engine Core ───────────────────────────────────────────────────
 const SmartPairingEngine = require('./core/EngineService');
 const PRESETS = require('./core/presets');
+const vendorSwapEngine = require('./engine/vendor-swap');
 
 
 
@@ -151,6 +152,38 @@ app.post('/api/session/analyze', (req, res) => {
   let sessionEvents = events || (sessionId && engine.clickstreamEngine.sessions.get(sessionId)) || [...engine.clickstreamEngine.sessions.values()][0] || [];
   const analysis = analyzer.analyzeSession(sessionEvents);
   res.json(analysis);
+});
+
+// ─── SaaS Vendor Swap Engine API ────────────────────────────────────────────
+
+/**
+ * POST /api/v1/transaction/swap
+ * Headless Execution Layer - Evaluates and executes vendor swaps asynchronously
+ */
+app.post('/api/v1/transaction/swap', async (req, res) => {
+  try {
+    const result = await vendorSwapEngine.processTransaction(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Transaction processing failed' });
+  }
+});
+
+/**
+ * POST /api/v1/admin/config
+ * Configuration Portal - Update Engine Behavior
+ */
+app.post('/api/v1/admin/config', (req, res) => {
+  vendorSwapEngine.updateConfig(req.body);
+  res.json({ message: 'Configuration synchronized', currentConfig: vendorSwapEngine.configs });
+});
+
+/**
+ * GET /api/v1/admin/logs
+ * Real-time Visual Feed API
+ */
+app.get('/api/v1/admin/logs', (req, res) => {
+  res.json(vendorSwapEngine.getLogs());
 });
 
 /**
