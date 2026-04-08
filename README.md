@@ -1,5 +1,5 @@
 # Smart Pairing Engine v2.0 — Axiom Hive
-
+**CREATOR: NICHOLAS M. GROSSI**
 [![Version](https://img.shields.io/badge/version-2.0.0--SaaS-blue.svg)](https://github.com/AXIOMHIVE/example-purchase-model)
 [![Engine](https://img.shields.io/badge/engine-AxiomCore--2.0-green.svg)](https://github.com/AXIOMHIVE/example-purchase-model)
 [![License](https://img.shields.io/badge/license-PROPRIETARY-red.svg)](https://github.com/AXIOMHIVE/example-purchase-model)
